@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: 40 33% 98%; /* Off-white warm */
+    --foreground: 20 14% 15%; /* Dark charcoal */
+
+    /* Primary: Dourado Queimado (Ouro do Cerrado) */
+    --primary: 38 45% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary: Verde Oliva Escuro (Natureza) */
+    --secondary: 100 15% 30%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 40 20% 90%;
+    --muted-foreground: 20 10% 40%;
+
+    --accent: 38 30% 85%;
+    --accent-foreground: 20 14% 15%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 40 15% 85%;
+    --input: 40 15% 85%;
+    --ring: 38 45% 55%;
+
+    --radius: 0.5rem;
+  }
+  
+  html {
+  scroll-behavior: smooth;
+  }
+
+  .dark {
+    --background: 20 14% 15%;
+    --foreground: 40 33% 98%;
+
+    --primary: 38 45% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 100 15% 30%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 20 10% 25%;
+    --muted-foreground: 40 20% 70%;
+
+    --accent: 20 10% 25%;
+    --accent-foreground: 40 33% 98%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 40 33% 98%;
+
+    --border: 20 10% 25%;
+    --input: 20 10% 25%;
+    --ring: 38 45% 55%;
+  }
+}
+
+@layer base {
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display, "Outfit", sans-serif);
+    letter-spacing: -0.025em;
+  }
+}
+
+@layer utilities {
+  .section-padding {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+  @media (min-width: 768px) {
+    .section-padding {
+      padding-top: 8rem;
+      padding-bottom: 8rem;
+    }
+  }
+  .container-custom {
+    width: 100%;
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .text-gradient-gold {
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(to right, #C29B57, #E3C385);
+  }
+  .glass-nav {
+    background-color: rgba(250, 248, 246, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(220, 215, 205, 0.5);
+  }
+  .shadow-luxury {
+    box-shadow: 0 20px 50px -12px rgba(0,0,0,0.1);
+  }
+  .shadow-card {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+    transition: box-shadow 0.3s ease;
+  }
+  .shadow-card:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  }
+}
+
+/* Animations */
+.hover-lift {
+  transition: transform 0.3s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-0.5rem);
+}
+
+/* Google Fonts Import in HTML */
