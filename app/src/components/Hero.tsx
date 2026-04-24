@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight} from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -80,7 +80,9 @@ const Hero = () => {
             </h1>
             
             <p className="hero-element text-base md:text-lg lg:text-xl font-light text-muted-foreground max-w-lg">
-              Role a página para baixo e veja o vídeo avançar perfeitamente. Um sistema de animação idêntico à sua referência de alto padrão.
+              Sua estadia inesquecível começa aqui
+              <br />
+              Uma experiência única em hospedagem no coração de Buritis-MG
             </p>
             
             <div className="hero-element pt-4 flex flex-col sm:flex-row gap-4">
@@ -97,7 +99,13 @@ const Hero = () => {
                 {/* Botão secundário */}
                 <a 
                   href="#contato" 
-                  className="inline-flex justify-center px-8 py-4 bg-transparent border border-[#2c2421] text-[#2c2421] font-medium rounded-full hover:bg-[#904031] hover:text-white transition-all duration-300 items-center shadow-sm hover:shadow-lg"
+                  className="inline-flex justify-center px-8 py-4 
+                    bg-[#b2875c]/10 backdrop-blur-lg 
+                    border border-white/20 text-[#2c2421] 
+                    font-medium rounded-full 
+                    hover:bg-[#904031] hover:text-white 
+                    transition-all duration-300 
+                    items-center shadow-sm hover:shadow-lg"
                 >
                   Fazer Reserva
                 </a>
@@ -118,9 +126,10 @@ const Hero = () => {
             />
           </div>
 
-        </div>
+        </div>     
       </div>
     </section>
+    
   );
 };
 

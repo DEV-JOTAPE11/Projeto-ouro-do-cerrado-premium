@@ -1,13 +1,74 @@
+import { useEffect, useRef, useState } from "react";
 import hotelExterior from "@/assets/Fachacerrado.webp";
+
+const AnimatedNumber = ({
+  end,
+  suffix = "",
+  decimals = 0,
+}: {
+  end: number;
+  suffix?: string;
+  decimals?: number;
+}) => {
+  const [value, setValue] = useState(0);
+  const [start, setStart] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Só inicia animação quando entra na tela
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setStart(true);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (ref.current) observer.observe(ref.current);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!start) return;
+
+    let startTime: number | null = null;
+    const duration = 1400;
+
+    const animate = (time: number) => {
+      if (!startTime) startTime = time;
+
+      const progress = Math.min((time - startTime) / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+
+      setValue(end * ease);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [start, end]);
+
+  return (
+    <div ref={ref}>
+      {value.toFixed(decimals)}
+      {suffix}
+    </div>
+  );
+};
 
 const About = () => {
   return (
     <section id="sobre" className="section-padding bg-background relative overflow-hidden">
-      {/* Decorative background element */}
+      
       <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl z-0" />
       
       <div className="container-custom relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
+
           {/* Image */}
           <div className="animate-slide-in relative">
             <div className="relative overflow-hidden rounded-tr-[80px] rounded-bl-[80px] shadow-luxury group">
@@ -26,6 +87,7 @@ const About = () => {
 
           {/* Content */}
           <div className="space-y-8 animate-slide-in-right">
+            
             <div className="space-y-4">
               <div className="flex items-center gap-4">
                 <div className="h-px w-12 bg-primary" />
@@ -36,7 +98,9 @@ const About = () => {
               
               <h2 className="text-4xl lg:text-5xl font-bold text-foreground leading-tight">
                 Bem-vindo ao{" "}
-                <span className="text-gradient-gold block mt-2">Ouro do Cerrado</span>
+                <span className="text-gradient-gold block mt-2">
+                  Ouro do Cerrado
+                </span>
               </h2>
             </div>
             
@@ -49,20 +113,38 @@ const About = () => {
               </p>
             </div>
 
+            {/* Números animados */}
             <div className="grid grid-cols-3 gap-8 pt-8 border-t border-border">
+              
               <div className="space-y-2">
-                <div className="text-4xl font-bold text-primary font-display">4+</div>
-                <div className="text-sm font-medium text-foreground uppercase tracking-wider">Anos de<br/>Experiência</div>
+                <div className="text-4xl font-bold text-[#b2875c] font-display">
+                  <AnimatedNumber end={4} suffix="+" />
+                </div>
+                <div className="text-sm font-medium text-foreground uppercase tracking-wider">
+                  Anos de<br />Experiência
+                </div>
               </div>
+
               <div className="space-y-2">
-                <div className="text-4xl font-bold text-primary font-display">500+</div>
-                <div className="text-sm font-medium text-foreground uppercase tracking-wider">Hóspedes<br/>Satisfeitos</div>
+                <div className="text-4xl font-bold text-[#b2875c] font-display">
+                  <AnimatedNumber end={500} suffix="+" />
+                </div>
+                <div className="text-sm font-medium text-foreground uppercase tracking-wider">
+                  Hóspedes<br />Satisfeitos
+                </div>
               </div>
+
               <div className="space-y-2">
-                <div className="text-4xl font-bold text-primary font-display">4.8</div>
-                <div className="text-sm font-medium text-foreground uppercase tracking-wider">Avaliação<br/>Média</div>
+                <div className="text-4xl font-bold text-[#b2875c] font-display">
+                  <AnimatedNumber end={4.8} decimals={1} />
+                </div>
+                <div className="text-sm font-medium text-foreground uppercase tracking-wider">
+                  Avaliação<br />Média
+                </div>
               </div>
+
             </div>
+
           </div>
         </div>
       </div>
