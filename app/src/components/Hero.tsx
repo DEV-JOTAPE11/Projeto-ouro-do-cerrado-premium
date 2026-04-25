@@ -92,7 +92,7 @@ const Hero = () => {
                   href="#acomodacoes" 
                   className="group relative inline-flex justify-center px-8 py-4 bg-[#b2875c] text-white font-medium rounded-full overflow-hidden hover:bg-[#9a744d] transition-all duration-300 items-center gap-2 shadow-lg hover:shadow-xl"
                 >
-                  <span className="relative z-10">Iniciar Projeto</span>
+                  <span className="relative z-10">Confira Nossas Acomodações</span>
                   <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform relative z-10" />
                 </a>
 

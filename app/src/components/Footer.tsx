@@ -1,4 +1,21 @@
-import { MapPin, Phone, Clock, MessageCircle, Mail } from "lucide-react";
+import { MapPin, Phone, Clock, MessageCircle } from "lucide-react";
+
+const InstagramIcon = ({ className }: { className?: string }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+    aria-hidden="true"
+  >
+    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+    <path d="M16 11.37a4 4 0 1 1-7.92 1.18A4 4 0 0 1 16 11.37z" />
+    <path d="M17.5 6.5h.01" />
+  </svg>
+);
 
 const Footer = () => {
   return (
@@ -13,25 +30,25 @@ const Footer = () => {
               <img
                 src="/Logo_ouro_cerrado.png"
                 alt="Ouro do Cerrado Logo"
-                className="h-16 w-auto bg-white/10 rounded-lg p-2"
+                className="h-26 w-auto bg-white/10 rounded-lg p-2"
               />
             </div>
             <p className="text-white/60 text-sm leading-relaxed font-light">
               Redefinindo a arte de hospedar no coração do Cerrado. Conforto contemporâneo, elegância e hospitalidade calorosa.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors duration-300">
-                <MessageCircle className="w-5 h-5" />
+              <a href="https://wa.me/5538999248203" aria-label="WhatsApp" className="group w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:-translate-y-1 hover:scale-105 hover:shadow-lg transition-all duration-300">
+                <MessageCircle className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors duration-300">
-                <Mail className="w-5 h-5" />
+              <a href="https://www.instagram.com/ourodocerradohotel/" aria-label="Instagram" className="group w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:-translate-y-1 hover:scale-105 hover:shadow-lg transition-all duration-300">
+                <InstagramIcon className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
               </a>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-bold mb-6 font-display">Links Rápidos</h4>
+            <h4 className="text-lg font-bold mb-6 font-display text-white">Links Rápidos</h4>
             <ul className="space-y-4 text-white/60 text-sm">
               <li><a href="#inicio" className="hover:text-primary transition-colors">Início</a></li>
               <li><a href="#sobre" className="hover:text-primary transition-colors">Sobre Nós</a></li>
@@ -43,7 +60,7 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-lg font-bold mb-6 font-display">Contato</h4>
+            <h4 className="text-lg font-bold mb-6 font-display text-white">Contato</h4>
             <ul className="space-y-4 text-white/60 text-sm">
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-primary shrink-0" />
@@ -58,7 +75,7 @@ const Footer = () => {
 
           {/* Status */}
           <div>
-            <h4 className="text-lg font-bold mb-6 font-display">Atendimento</h4>
+            <h4 className="text-lg font-bold mb-6 font-display text-white">Atendimento</h4>
             <div className="bg-white/5 p-6 rounded-xl border border-white/10">
               <div className="flex items-center gap-3 mb-4">
                 <div className="relative flex h-3 w-3">

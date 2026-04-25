@@ -1,28 +1,28 @@
-import { StaggerTestimonials } from "@/components/ui/stagger-testimonials";
+import { Component as MarqueeTestimonials } from "@/components/ui/marquee-card";
 
 const Testimonials = () => {
   return (
-    <section className="section-padding bg-background relative overflow-hidden">
-      <div className="absolute left-0 top-20 h-72 w-72 rounded-full bg-primary/5 blur-3xl" />
+    <section className="section-padding relative overflow-hidden bg-[linear-gradient(135deg,#fbfaf7_0%,#f3eadc_42%,#eef3e8_100%)]">
+      <div className="absolute inset-x-0 top-0 h-px bg-white/80" />
 
       <div className="container-custom relative z-10">
-        <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-in-up">
-          <div className="flex items-center justify-center gap-4 mb-4">
+        <div className="mx-auto mb-12 max-w-3xl text-center animate-fade-in-up">
+          <div className="mb-4 flex items-center justify-center gap-4">
             <div className="h-px w-8 bg-primary" />
-            <span className="text-[#c1875c] font-medium tracking-widest uppercase text-sm">
+            <span className="text-sm font-medium uppercase tracking-widest text-[#b2875c]">
               Depoimentos
             </span>
             <div className="h-px w-8 bg-primary" />
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mt-4 mb-6 font-display">
+          <h2 className="mt-4 mb-6 text-4xl font-bold font-display md:text-5xl">
             A Voz dos Nossos Hóspedes
           </h2>
           <p className="text-lg text-muted-foreground">
-            Histórias fictícias inspiradas em experiências memoráveis no Ouro do Cerrado
+            Avaliações fictícias inspiradas em experiências memoráveis no Ouro do Cerrado.
           </p>
         </div>
 
-        <StaggerTestimonials />
+        <MarqueeTestimonials />
       </div>
     </section>
   );

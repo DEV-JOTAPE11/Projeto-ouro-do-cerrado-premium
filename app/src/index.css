@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme inline {
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+}
+
 @layer base {
   :root {
     --background: 40 33% 98%; /* Off-white warm */
@@ -119,6 +124,24 @@
 }
 .hover-lift:hover {
   transform: translateY(-0.5rem);
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+  }
 }
 
 /* Google Fonts Import in HTML */
