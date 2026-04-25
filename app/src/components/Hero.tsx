@@ -9,11 +9,36 @@ gsap.registerPlugin(ScrollTrigger);
 const Hero = () => {
   const containerRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const videoDurationRef = useRef(8);
+  const desiredTimeRef = useRef(0);
+
+  const syncVideoTime = (time: number) => {
+    desiredTimeRef.current = time;
+
+    const video = videoRef.current;
+    if (!video || video.readyState < 1) return;
+
+    const duration = video.duration || videoDurationRef.current;
+    const safeTime = Math.min(Math.max(time, 0), duration);
+
+    if (Number.isFinite(safeTime)) {
+      video.currentTime = safeTime;
+    }
+  };
 
   useLayoutEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.muted = true;
+      video.playsInline = true;
+      video.setAttribute("playsinline", "true");
+      video.setAttribute("webkit-playsinline", "true");
+      video.load();
+    }
+
     const ctx = gsap.context(() => {
       // Duração exata do vídeo re-encodado para o scrub perfeito
-      const videoDuration = 8;
+      videoDurationRef.current = 8;
 
       // Usando trigger no container (250vh) sem pin, porque a div interna é sticky!
       ScrollTrigger.create({
@@ -26,7 +51,7 @@ const Hero = () => {
           // self.progress vai de 0 a 1 conforme você desce, e 1 a 0 conforme você sobe!
           if (videoRef.current) {
             // Força o vídeo a ir para o tempo exato (isso garante que o vídeo VOLTE quando rolar pra cima)
-            videoRef.current.currentTime = self.progress * videoDuration;
+            syncVideoTime(self.progress * videoDurationRef.current);
           }
         }
       });
@@ -119,10 +144,20 @@ const Hero = () => {
             <video
               ref={videoRef}
               src="/hero-video-intra.mp4"
-              className="absolute inset-0 w-full h-full object-cover"
+              poster={backgroundImage}
+              className="absolute inset-0 w-full h-full object-cover bg-black/5"
               muted
               playsInline
               preload="auto"
+              autoPlay
+              onLoadedMetadata={(event) => {
+                const video = event.currentTarget;
+                videoDurationRef.current = video.duration || 8;
+                syncVideoTime(desiredTimeRef.current);
+              }}
+              onLoadedData={(event) => {
+                event.currentTarget.pause();
+              }}
             />
           </div>
 

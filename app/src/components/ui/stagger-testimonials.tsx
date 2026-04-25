@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FC } from "react";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 
 const SQRT_5000 = Math.sqrt(5000);
 const ACCENT = "#000000";
