@@ -12,6 +12,7 @@ node_modules
 dist
 dist-ssr
 public/hero-video-intra.optimized.mp4
+public/hero-video-intra-desktop.mp4
 *.local
 
 # Editor directories and files

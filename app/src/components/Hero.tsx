@@ -8,17 +8,21 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Hero = () => {
   const containerRef = useRef<HTMLElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const videoDurationRef = useRef(8);
-  const desiredTimeRef = useRef(0);
+  const desktopVideoRef = useRef<HTMLVideoElement>(null);
+  const mobileVideoRef = useRef<HTMLVideoElement>(null);
+  const mobileVideoDurationRef = useRef(8);
+  const mobileDesiredTimeRef = useRef(0);
 
-  const syncVideoTime = (time: number) => {
-    desiredTimeRef.current = time;
+  const isMobileViewport = () =>
+    typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
 
-    const video = videoRef.current;
+  const syncMobileVideoTime = (time: number) => {
+    mobileDesiredTimeRef.current = time;
+
+    const video = mobileVideoRef.current;
     if (!video || video.readyState < 1) return;
 
-    const duration = video.duration || videoDurationRef.current;
+    const duration = video.duration || mobileVideoDurationRef.current;
     const safeTime = Math.min(Math.max(time, 0), duration);
 
     if (Number.isFinite(safeTime)) {
@@ -27,9 +31,10 @@ const Hero = () => {
   };
 
   useLayoutEffect(() => {
-    const video = videoRef.current;
+    const video = mobileVideoRef.current;
     if (video) {
       video.muted = true;
+
       video.playsInline = true;
       video.setAttribute("playsinline", "true");
       video.setAttribute("webkit-playsinline", "true");
@@ -38,7 +43,7 @@ const Hero = () => {
 
     const ctx = gsap.context(() => {
       // Duração exata do vídeo re-encodado para o scrub perfeito
-      videoDurationRef.current = 8;
+      const videoDuration = 8;
 
       // Usando trigger no container (250vh) sem pin, porque a div interna é sticky!
       ScrollTrigger.create({
@@ -49,9 +54,14 @@ const Hero = () => {
         once: false, // EXTREMAMENTE IMPORTANTE: sobrescreve o ScrollTrigger.defaults({ once: true }) do App.tsx
         onUpdate: (self) => {
           // self.progress vai de 0 a 1 conforme você desce, e 1 a 0 conforme você sobe!
-          if (videoRef.current) {
+          
             // Força o vídeo a ir para o tempo exato (isso garante que o vídeo VOLTE quando rolar pra cima)
-            syncVideoTime(self.progress * videoDurationRef.current);
+          const nextTime = self.progress * videoDuration;
+
+          if (isMobileViewport()) {
+            syncMobileVideoTime(nextTime);
+          } else if (desktopVideoRef.current) {
+            desktopVideoRef.current.currentTime = nextTime;
           }
         }
       });
@@ -142,22 +152,26 @@ const Hero = () => {
           {/* Coluna da Direita: Vídeo Menor e Arredondado (No mobile fica em cima por causa do flex-col-reverse) */}
           <div className="hero-element relative w-full aspect-video lg:aspect-[4/3] rounded-2xl lg:rounded-3xl overflow-hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] bg-black/5 border border-border/50">
             <video
-              ref={videoRef}
-              src="/hero-video-intra.mp4"
+              ref={mobileVideoRef}
+              src="/hero-video-intra-mobile.mp4"
               poster={backgroundImage}
-              className="absolute inset-0 w-full h-full object-cover bg-black/5"
+              className="absolute inset-0 w-full h-full object-cover bg-black/5 md:hidden"
               muted
               playsInline
               preload="auto"
-              autoPlay
               onLoadedMetadata={(event) => {
                 const video = event.currentTarget;
-                videoDurationRef.current = video.duration || 8;
-                syncVideoTime(desiredTimeRef.current);
+                mobileVideoDurationRef.current = video.duration || 8;
+                syncMobileVideoTime(mobileDesiredTimeRef.current);
               }}
-              onLoadedData={(event) => {
-                event.currentTarget.pause();
-              }}
+            />
+            <video
+              ref={desktopVideoRef}
+              src="/hero-video-intra.mp4"
+              className="absolute inset-0 hidden w-full h-full object-cover md:block"
+              muted
+              playsInline
+              preload="auto"
             />
           </div>
 
