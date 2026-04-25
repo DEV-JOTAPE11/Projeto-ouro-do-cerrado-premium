@@ -48,7 +48,7 @@ const Services = () => {
             <div className="space-y-4">
               <div className="flex items-center gap-4">
                 <div className="h-px w-12 bg-primary" />
-                <span className="text-primary font-medium tracking-widest uppercase text-sm">
+                <span className="text-[#c1875c] font-medium tracking-widest uppercase text-sm">
                   Comodidades & Serviços
                 </span>
               </div>
@@ -61,21 +61,21 @@ const Services = () => {
             </div>
 
             {/* Services Grid */}
-            <div className="grid sm:grid-cols-2 gap-x-8 gap-y-10">
+            <div className="grid sm:grid-cols-2 gap-6">
               {services.map((service, index) => (
                 <div
                   key={service.title}
-                  className="flex gap-4 group animate-scale-in"
-                  data-delay={index * 0.1}
+                  className="flex gap-4 group animate-slide-in"
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div className="flex-shrink-0">
-                    <div className="w-14 h-14 rounded-2xl bg-secondary/10 flex items-center justify-center group-hover:bg-primary transition-colors duration-300">
-                      <service.icon className="h-7 w-7 text-secondary group-hover:text-primary-foreground transition-colors" />
+                    <div className="w-12 h-12 rounded-lg bg-[#c1875c]/10 flex items-center justify-center group-hover:bg-[#c1875c]/10 group-hover:scale-110 transition-all duration-300">
+                      <service.icon className="h-6 w-6 text-[#c1875c] group-hover:text-[#c1875c]" />
                     </div>
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg mb-1 text-foreground">{service.title}</h3>
-                    <p className="text-sm text-muted-foreground font-light">{service.description}</p>
+                    <h3 className="font-semibold text-lg mb-1">{service.title}</h3>
+                    <p className="text-sm text-muted-foreground">{service.description}</p>
                   </div>
                 </div>
               ))}

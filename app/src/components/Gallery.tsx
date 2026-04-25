@@ -1,52 +1,65 @@
-import { Maximize2 } from "lucide-react";
-import img1 from "@/assets/arealazer.webp";
-import img2 from "@/assets/lobby-chandelier.png";
-import img3 from "@/assets/bathroom-luxury.png";
-import img4 from "@/assets/Nova-imagem--fundo.jpg";
-import img5 from "@/assets/hotel-exterior.jpg";
+import heroSuite from "@/assets/fachadaprincipal.webp";
+import hotelExterior from "@/assets/Melhore_a_qualidade_202604240012.jpeg";
+import breakfast from "@/assets/cafe-mmanha-frutas.jpg";
+import roomStandard from "@/assets/cafe-breakfast.jpg";
+import roomFamily from "@/assets/arealazer.webp";
+import lobbyChandelier from "@/assets/suiteluxuosa.jpeg";
+import bathroomLuxury from "@/assets/bathroom-luxury.png";
+import salaTV from "@/assets/sala-de-tv.webp";
 
 const galleryImages = [
-  { src: img1, alt: "Área de Lazer", span: "md:col-span-2 md:row-span-2" },
-  { src: img2, alt: "Lobby Elegante", span: "md:col-span-1 md:row-span-1" },
-  { src: img3, alt: "Banheiro Luxuoso", span: "md:col-span-1 md:row-span-1" },
-  { src: img4, alt: "Ambiente Aconchegante", span: "md:col-span-1 md:row-span-1" },
-  { src: img5, alt: "Exterior do Hotel", span: "md:col-span-1 md:row-span-1" },
+  { id: 1, src: heroSuite, alt: "Entrada do hotel" },
+  { id: 2, src: hotelExterior, alt: "Fachada do hotel" },
+  { id: 3, src: breakfast, alt: "Café da manhã completo" },
+  { id: 4, src: lobbyChandelier, alt: "Suíte de luxo com ar e hidromassegem" },
+  { id: 5, src: bathroomLuxury, alt: "Banheiro luxuoso" },
+  { id: 6, src: roomStandard, alt: "Café da manhã" },
+  { id: 7, src: roomFamily, alt: "Área de lazer" },
+  { id: 8, src: salaTV, alt: "Sala de TV" },
 ];
 
 const Gallery = () => {
   return (
-    <section id="galeria" className="section-padding bg-muted/20">
+    <section id="galeria" className="section-padding bg-background">
       <div className="container-custom">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-in-up">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="h-px w-8 bg-primary" />
-            <span className="text-primary font-medium tracking-widest uppercase text-sm">
-              Galeria de Fotos
-            </span>
-            <div className="h-px w-8 bg-primary" />
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold font-display">
-            A Experiência Visual
+        <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-in">
+          <span className="text-[#c1875c] font-semibold text-sm uppercase tracking-wider">
+            Galeria de Fotos
+          </span>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mt-4 mb-6">
+            Conheça Nossas Instalações
           </h2>
+          <p className="text-lg text-muted-foreground">
+            Uma prévia do que espera por você no Ouro do Cerrado Hotel
+          </p>
         </div>
 
-        {/* Masonry Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:auto-rows-[250px]">
-          {galleryImages.map((img, index) => (
-            <div 
-              key={index}
-              className={`relative overflow-hidden rounded-2xl group cursor-pointer animate-scale-in ${img.span}`}
-              data-delay={index * 0.1}
+        {/* Gallery Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {galleryImages.map((image, index) => (
+            <div
+              key={image.id}
+              className={`
+                relative overflow-hidden rounded-xl shadow-card group cursor-pointer animate-scale-in
+                ${index === 0 ? "col-span-2 row-span-2" : ""}
+                ${index === 3 ? "col-span-2" : ""}
+              `}
+              style={{ animationDelay: `${index * 0.05}s` }}
             >
-              <img 
-                src={img.src} 
-                alt={img.alt} 
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              <img
+                src={image.src}
+                alt={image.alt}
+                className={`
+                  w-full object-cover group-hover:scale-110 transition-transform duration-500
+                  ${index === 0 ? "h-full min-h-[500px]" : "h-64"}
+                `}
               />
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <div className="bg-white/20 backdrop-blur-md p-3 rounded-full text-white transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                  <Maximize2 className="w-6 h-6" />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <p className="text-white text-center px-4 font-medium">
+                    {image.alt}
+                  </p>
                 </div>
               </div>
             </div>

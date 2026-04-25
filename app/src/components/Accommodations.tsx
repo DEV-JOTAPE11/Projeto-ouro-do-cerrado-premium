@@ -130,7 +130,7 @@ const Accommodations = () => {
     <section id="acomodacoes" className="section-padding bg-muted/30">
       <div className="container-custom">
         <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-in">
-          <span className="text-primary font-semibold text-sm uppercase tracking-wider">
+          <span className="text-[#c1875c] font-semibold text-sm uppercase tracking-wider">
             Nossas Acomodações
           </span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mt-4 mb-6">
