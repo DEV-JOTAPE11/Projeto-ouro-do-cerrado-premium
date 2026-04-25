@@ -188,16 +188,16 @@ const Accommodations = () => {
                 {/* Info Icons */}
                 <div className="flex items-center gap-6 text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-primary" />
+                    <Users className="h-4 w-4 text-[#b2875c]" />
                     <span>{room.guests}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Bed className="h-4 w-4 text-primary" />
+                    <Bed className="h-4 w-4 text-[#b2875c]" />
                     <span>{room.beds}</span>
                   </div>
                   {room.size && (
                   <div className="flex items-center gap-2">
-                    <Maximize className="h-4 w-4 text-primary" />
+                    <Maximize className="h-4 w-4 text-[#b2875c]" />
                     <span>{room.size}</span>
                   </div>
                   )}
@@ -207,7 +207,7 @@ const Accommodations = () => {
                 <ul className="space-y-2">
                   {room.features.map((feature) => (
                     <li key={feature} className="flex items-center text-sm text-muted-foreground">
-                      <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2" />
+                      <div className="w-1.5 h-1.5 bg-[#b2875c] rounded-full mr-2" />
                       {feature}
                     </li>
                   ))}
