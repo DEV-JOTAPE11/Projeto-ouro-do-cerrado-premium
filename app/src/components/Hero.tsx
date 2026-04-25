@@ -8,7 +8,10 @@ gsap.registerPlugin(ScrollTrigger);
 
 const MOBILE_VIDEO_SRC = "/hero-video-intra-mobile.mp4";
 const ANDROID_VIDEO_SRC = "/hero-video-intra-android.mp4";
-const DESKTOP_VIDEO_SRC = "/hero-video-intra.mp4";
+const DESKTOP_VIDEO_SRC = "/hero-video-intra-desktop-scrub.mp4";
+const LEGACY_DESKTOP_VIDEO_SRC = "/hero-video-intra.mp4";
+const DESKTOP_SCRUB_FPS = 24;
+const DESKTOP_SCRUB_STEP = 1 / DESKTOP_SCRUB_FPS;
 const ANDROID_SCRUB_FPS = 12;
 const ANDROID_SCRUB_STEP = 1 / ANDROID_SCRUB_FPS;
 
@@ -24,9 +27,52 @@ const Hero = () => {
   const mobileSeekRafRef = useRef<number | null>(null);
   const mobileLastAppliedTimeRef = useRef(-1);
   const isAndroidScrubModeRef = useRef(false);
+  const desktopDesiredTimeRef = useRef(0);
+  const desktopSeekRafRef = useRef<number | null>(null);
+  const desktopLastAppliedTimeRef = useRef(-1);
 
   const isMobileViewport = () =>
     typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
+
+  const applyDesktopVideoTime = useCallback((time: number) => {
+    const video = desktopVideoRef.current;
+    if (!video || video.readyState < 1) return;
+
+    const duration = video.duration || 8;
+    let safeTime = Math.min(Math.max(time, 0), duration);
+
+    if (!Number.isFinite(safeTime)) return;
+
+    safeTime = Math.min(
+      duration,
+      Math.round(safeTime * DESKTOP_SCRUB_FPS) / DESKTOP_SCRUB_FPS
+    );
+
+    if (Math.abs(safeTime - desktopLastAppliedTimeRef.current) < DESKTOP_SCRUB_STEP * 0.5) {
+      return;
+    }
+
+    if (video.seeking) return;
+
+    if (typeof video.fastSeek === "function") {
+      video.fastSeek(safeTime);
+    } else {
+      video.currentTime = safeTime;
+    }
+
+    desktopLastAppliedTimeRef.current = safeTime;
+  }, []);
+
+  const syncDesktopVideoTime = useCallback((time: number) => {
+    desktopDesiredTimeRef.current = time;
+
+    if (desktopSeekRafRef.current !== null) return;
+
+    desktopSeekRafRef.current = window.requestAnimationFrame(() => {
+      desktopSeekRafRef.current = null;
+      applyDesktopVideoTime(desktopDesiredTimeRef.current);
+    });
+  }, [applyDesktopVideoTime]);
 
   const applyMobileVideoTime = useCallback((time: number) => {
     const video = mobileVideoRef.current;
@@ -82,21 +128,31 @@ const Hero = () => {
   useLayoutEffect(() => {
     isAndroidScrubModeRef.current = isAndroidDevice();
 
-    const video = mobileVideoRef.current;
+    const mobileVideo = mobileVideoRef.current;
+    const desktopVideo = desktopVideoRef.current;
     const handleMobileSeeked = () => {
       if (isAndroidScrubModeRef.current) {
         syncMobileVideoTime(mobileDesiredTimeRef.current);
       }
     };
+    const handleDesktopSeeked = () => {
+      syncDesktopVideoTime(desktopDesiredTimeRef.current);
+    };
 
-    if (video) {
-      video.muted = true;
+    if (mobileVideo) {
+      mobileVideo.muted = true;
 
-      video.playsInline = true;
-      video.setAttribute("playsinline", "true");
-      video.setAttribute("webkit-playsinline", "true");
-      video.addEventListener("seeked", handleMobileSeeked);
-      video.load();
+      mobileVideo.playsInline = true;
+      mobileVideo.setAttribute("playsinline", "true");
+      mobileVideo.setAttribute("webkit-playsinline", "true");
+      mobileVideo.addEventListener("seeked", handleMobileSeeked);
+      mobileVideo.load();
+    }
+
+    if (desktopVideo) {
+      desktopVideo.muted = true;
+      desktopVideo.playsInline = true;
+      desktopVideo.addEventListener("seeked", handleDesktopSeeked);
     }
 
     const ctx = gsap.context(() => {
@@ -118,8 +174,8 @@ const Hero = () => {
 
           if (isMobileViewport()) {
             syncMobileVideoTime(nextTime);
-          } else if (desktopVideoRef.current) {
-            desktopVideoRef.current.currentTime = nextTime;
+          } else {
+            syncDesktopVideoTime(nextTime);
           }
         }
       });
@@ -144,17 +200,27 @@ const Hero = () => {
         mobileSeekRafRef.current = null;
       }
 
-      if (video) {
-        video.removeEventListener("seeked", handleMobileSeeked);
+      if (desktopSeekRafRef.current !== null) {
+        window.cancelAnimationFrame(desktopSeekRafRef.current);
+        desktopSeekRafRef.current = null;
+      }
+
+      if (mobileVideo) {
+        mobileVideo.removeEventListener("seeked", handleMobileSeeked);
+      }
+
+      if (desktopVideo) {
+        desktopVideo.removeEventListener("seeked", handleDesktopSeeked);
       }
 
       ctx.revert();
     };
-  }, [syncMobileVideoTime]);
+  }, [syncDesktopVideoTime, syncMobileVideoTime]);
 
   const isMobile = isMobileViewport();
   const isAndroid = isAndroidDevice();
   const mobileVideoSrc = isAndroid ? ANDROID_VIDEO_SRC : MOBILE_VIDEO_SRC;
+  const desktopVideoSrc = isMobile ? LEGACY_DESKTOP_VIDEO_SRC : DESKTOP_VIDEO_SRC;
   const mobilePreload = isMobile ? "auto" : "none";
   const desktopPreload = isAndroid && isMobile ? "none" : "auto";
 
@@ -242,11 +308,14 @@ const Hero = () => {
             />
             <video
               ref={desktopVideoRef}
-              src={DESKTOP_VIDEO_SRC}
+              src={desktopVideoSrc}
               className="absolute inset-0 hidden w-full h-full object-cover md:block"
               muted
               playsInline
               preload={desktopPreload}
+              onLoadedMetadata={() => {
+                syncDesktopVideoTime(desktopDesiredTimeRef.current);
+              }}
             />
           </div>
 
