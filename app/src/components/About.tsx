@@ -71,15 +71,15 @@ const About = () => {
 
           {/* Image */}
           <div className="animate-slide-in relative">
-            <div className="relative overflow-hidden rounded-tr-[80px] rounded-bl-[80px] shadow-luxury group">
+            <div className="relative overflow-hidden rounded-tr-[48px] rounded-bl-[48px] sm:rounded-tr-[80px] sm:rounded-bl-[80px] shadow-luxury group">
               <img
                 src={hotelExterior}
                 alt="Fachada do Ouro do Cerrado Hotel"
-                className="w-full h-[500px] object-cover transition-transform duration-1000 group-hover:scale-105"
+                className="w-full h-[320px] sm:h-[420px] lg:h-[500px] object-cover transition-transform duration-1000 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-80" />
-              <div className="absolute bottom-8 left-8 text-white">
-                <p className="font-display text-3xl font-bold">Buritis, MG</p>
+              <div className="absolute bottom-5 left-5 sm:bottom-8 sm:left-8 text-white">
+                <p className="font-display text-2xl sm:text-3xl font-bold">Buritis, MG</p>
                 <p className="text-white/80 font-light">O coração do Cerrado</p>
               </div>
             </div>

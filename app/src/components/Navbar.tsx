@@ -84,7 +84,7 @@ const Navbar = () => {
         {/* Mobile Menu */}
         <div
           className={cn(
-            "fixed top-0 right-0 bottom-0 w-[60vw] bg-white shadow-xl flex flex-col items-center justify-start pt-24 pb-8 transition-transform duration-300 ease-in-out md:hidden z-40",
+            "fixed top-0 right-0 bottom-0 w-[60vw] transform-gpu bg-white shadow-xl flex flex-col items-center justify-start pt-24 pb-8 transition-transform duration-300 ease-out will-change-transform md:hidden z-40",
             isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
           )}
         >
