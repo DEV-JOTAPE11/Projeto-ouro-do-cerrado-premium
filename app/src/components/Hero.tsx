@@ -1,10 +1,19 @@
 import { ArrowRight} from "lucide-react";
-import { useLayoutEffect, useRef } from "react";
+import { useCallback, useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import backgroundImage from "../assets/Melhore_a_qualidade_202604240012.jpeg";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const MOBILE_VIDEO_SRC = "/hero-video-intra-mobile.mp4";
+const ANDROID_VIDEO_SRC = "/hero-video-intra-android.mp4";
+const DESKTOP_VIDEO_SRC = "/hero-video-intra.mp4";
+const ANDROID_SCRUB_FPS = 12;
+const ANDROID_SCRUB_STEP = 1 / ANDROID_SCRUB_FPS;
+
+const isAndroidDevice = () =>
+  typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);
 
 const Hero = () => {
   const containerRef = useRef<HTMLElement>(null);
@@ -12,32 +21,81 @@ const Hero = () => {
   const mobileVideoRef = useRef<HTMLVideoElement>(null);
   const mobileVideoDurationRef = useRef(8);
   const mobileDesiredTimeRef = useRef(0);
+  const mobileSeekRafRef = useRef<number | null>(null);
+  const mobileLastAppliedTimeRef = useRef(-1);
+  const isAndroidScrubModeRef = useRef(false);
 
   const isMobileViewport = () =>
     typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
 
-  const syncMobileVideoTime = (time: number) => {
-    mobileDesiredTimeRef.current = time;
-
+  const applyMobileVideoTime = useCallback((time: number) => {
     const video = mobileVideoRef.current;
     if (!video || video.readyState < 1) return;
 
     const duration = video.duration || mobileVideoDurationRef.current;
-    const safeTime = Math.min(Math.max(time, 0), duration);
+    let safeTime = Math.min(Math.max(time, 0), duration);
 
-    if (Number.isFinite(safeTime)) {
-      video.currentTime = safeTime;
+    if (!Number.isFinite(safeTime)) return;
+
+    if (isAndroidScrubModeRef.current) {
+      safeTime = Math.min(
+        duration,
+        Math.round(safeTime * ANDROID_SCRUB_FPS) / ANDROID_SCRUB_FPS
+      );
+
+      if (Math.abs(safeTime - mobileLastAppliedTimeRef.current) < ANDROID_SCRUB_STEP * 0.5) {
+        return;
+      }
+
+      if (video.seeking) return;
+
+      if (typeof video.fastSeek === "function") {
+        video.fastSeek(safeTime);
+      } else {
+        video.currentTime = safeTime;
+      }
+
+      mobileLastAppliedTimeRef.current = safeTime;
+      return;
     }
-  };
+
+    video.currentTime = safeTime;
+  }, []);
+
+  const syncMobileVideoTime = useCallback((time: number) => {
+    mobileDesiredTimeRef.current = time;
+
+    if (isAndroidScrubModeRef.current) {
+      if (mobileSeekRafRef.current !== null) return;
+
+      mobileSeekRafRef.current = window.requestAnimationFrame(() => {
+        mobileSeekRafRef.current = null;
+        applyMobileVideoTime(mobileDesiredTimeRef.current);
+      });
+
+      return;
+    }
+
+    applyMobileVideoTime(time);
+  }, [applyMobileVideoTime]);
 
   useLayoutEffect(() => {
+    isAndroidScrubModeRef.current = isAndroidDevice();
+
     const video = mobileVideoRef.current;
+    const handleMobileSeeked = () => {
+      if (isAndroidScrubModeRef.current) {
+        syncMobileVideoTime(mobileDesiredTimeRef.current);
+      }
+    };
+
     if (video) {
       video.muted = true;
 
       video.playsInline = true;
       video.setAttribute("playsinline", "true");
       video.setAttribute("webkit-playsinline", "true");
+      video.addEventListener("seeked", handleMobileSeeked);
       video.load();
     }
 
@@ -80,8 +138,25 @@ const Hero = () => {
       );
     }, containerRef);
 
-    return () => ctx.revert();
-  }, []);
+    return () => {
+      if (mobileSeekRafRef.current !== null) {
+        window.cancelAnimationFrame(mobileSeekRafRef.current);
+        mobileSeekRafRef.current = null;
+      }
+
+      if (video) {
+        video.removeEventListener("seeked", handleMobileSeeked);
+      }
+
+      ctx.revert();
+    };
+  }, [syncMobileVideoTime]);
+
+  const isMobile = isMobileViewport();
+  const isAndroid = isAndroidDevice();
+  const mobileVideoSrc = isAndroid ? ANDROID_VIDEO_SRC : MOBILE_VIDEO_SRC;
+  const mobilePreload = isMobile ? "auto" : "none";
+  const desktopPreload = isAndroid && isMobile ? "none" : "auto";
 
   return (
     // Container externo define quanto tempo a tela vai rolar (250vh)
@@ -153,12 +228,12 @@ const Hero = () => {
           <div className="hero-element relative w-full aspect-video lg:aspect-[4/3] rounded-2xl lg:rounded-3xl overflow-hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] bg-black/5 border border-border/50">
             <video
               ref={mobileVideoRef}
-              src="/hero-video-intra-mobile.mp4"
+              src={mobileVideoSrc}
               poster={backgroundImage}
               className="absolute inset-0 w-full h-full object-cover bg-black/5 md:hidden"
               muted
               playsInline
-              preload="auto"
+              preload={mobilePreload}
               onLoadedMetadata={(event) => {
                 const video = event.currentTarget;
                 mobileVideoDurationRef.current = video.duration || 8;
@@ -167,11 +242,11 @@ const Hero = () => {
             />
             <video
               ref={desktopVideoRef}
-              src="/hero-video-intra.mp4"
+              src={DESKTOP_VIDEO_SRC}
               className="absolute inset-0 hidden w-full h-full object-cover md:block"
               muted
               playsInline
-              preload="auto"
+              preload={desktopPreload}
             />
           </div>
 
