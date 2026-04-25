@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import hotelExterior from "@/assets/Fachacerrado.webp";
+import hotelExterior from "../assets/Fachacerrado.webp";
 
 const AnimatedNumber = ({
   end,

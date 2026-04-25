@@ -1,14 +1,14 @@
-import ElegantCarousel, { type AccommodationSlide } from "@/components/ui/elegant-carousel";
-import heroSuite from "@/assets/suiteluxuosa.jpeg";
-import heroSuiteHover from "@/assets/Banheirahidro.webp";
-import roomStandard from "@/assets/Suite-familia-com-ar.jpg";
-import roomFamily from "@/assets/luxo-executivo.jpg";
-import masterTriplo from "@/assets/master-triplo.jpg";
-import masterExecu from "@/assets/master-executivo-ar-frigo.jpg";
-import masterAR from "@/assets/master-ar.jpg";
-import masterexe from "@/assets/master-executivo.jpg";
-import standartventi from "@/assets/Standart_ventilador.jpg";
-import standartexecutivo from "@/assets/master-ar.jpg";
+import ElegantCarousel, { type AccommodationSlide } from "./ui/elegant-carousel";
+import heroSuite from "../assets/suiteluxuosa.jpeg";
+import heroSuiteHover from "../assets/Banheirahidro.webp";
+import roomStandard from "../assets/Suite-familia-com-ar.jpg";
+import roomFamily from "../assets/luxo-executivo.jpg";
+import masterTriplo from "../assets/master-triplo.jpg";
+import masterExecu from "../assets/master-executivo-ar-frigo.jpg";
+import masterAR from "../assets/master-ar.jpg";
+import masterexe from "../assets/master-executivo.jpg";
+import standartventi from "../assets/Standart_ventilador.jpg";
+import standartexecutivo from "../assets/master-ar.jpg";
 
 const accommodations: AccommodationSlide[] = [
   {

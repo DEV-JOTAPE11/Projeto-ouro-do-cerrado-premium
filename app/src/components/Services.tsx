@@ -1,5 +1,5 @@
 import { Coffee, Wifi, Car, UtensilsCrossed, Tv, Wind } from "lucide-react";
-import breakfastImage from "@/assets/cafemanha.jpg";
+import breakfastImage from "../assets/cafemanha.jpg";
 
 const services = [
   {

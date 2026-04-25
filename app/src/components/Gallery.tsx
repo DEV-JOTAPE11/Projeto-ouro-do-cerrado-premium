@@ -1,11 +1,11 @@
-import heroSuite from "@/assets/fachadaprincipal.webp";
-import hotelExterior from "@/assets/Melhore_a_qualidade_202604240012.jpeg";
-import breakfast from "@/assets/cafe-mmanha-frutas.jpg";
-import roomStandard from "@/assets/cafe-breakfast.jpg";
-import roomFamily from "@/assets/arealazer.webp";
-import lobbyChandelier from "@/assets/suiteluxuosa.jpeg";
-import bathroomLuxury from "@/assets/bathroom-luxury.png";
-import salaTV from "@/assets/sala-de-tv.webp";
+import heroSuite from "../assets/fachadaprincipal.webp";
+import hotelExterior from "../assets/Melhore_a_qualidade_202604240012.jpeg";
+import breakfast from "../assets/cafe-mmanha-frutas.jpg";
+import roomStandard from "../assets/cafe-breakfast.jpg";
+import roomFamily from "../assets/arealazer.webp";
+import lobbyChandelier from "../assets/suiteluxuosa.jpeg";
+import bathroomLuxury from "../assets/bathroom-luxury.png";
+import salaTV from "../assets/sala-de-tv.webp";
 
 const galleryImages = [
   { id: 1, src: heroSuite, alt: "Entrada do hotel" },

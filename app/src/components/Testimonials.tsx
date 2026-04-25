@@ -1,4 +1,4 @@
-import { Component as MarqueeTestimonials } from "@/components/ui/marquee-card";
+import { Component as MarqueeTestimonials } from "./ui/marquee-card";
 
 const Testimonials = () => {
   return (

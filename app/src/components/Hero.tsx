@@ -2,7 +2,7 @@ import { ArrowRight} from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import backgroundImage from "@/assets/Melhore_a_qualidade_202604240012.jpeg";
+import backgroundImage from "../assets/Melhore_a_qualidade_202604240012.jpeg";
 
 gsap.registerPlugin(ScrollTrigger);
 

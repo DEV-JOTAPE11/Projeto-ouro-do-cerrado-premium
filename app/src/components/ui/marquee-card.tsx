@@ -1,6 +1,6 @@
 import { Star } from "lucide-react";
-import { LiquidCard, CardContent } from "@/components/ui/liquid-glass-card";
-import { Marquee } from "@/components/ui/marquee";
+import { LiquidCard, CardContent } from "./liquid-glass-card";
+import { Marquee } from "./marquee";
 
 const testimonials = [
   {
