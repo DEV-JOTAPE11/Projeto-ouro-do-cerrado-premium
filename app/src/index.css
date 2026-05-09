@@ -102,9 +102,12 @@
     background-image: linear-gradient(to right, #C29B57, #E3C385);
   }
   .glass-nav {
-    background-color: rgba(250, 248, 246, 0.8);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(220, 215, 205, 0.5);
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+    border-radius: 100px;
   }
   .shadow-luxury {
     box-shadow: 0 20px 50px -12px rgba(0,0,0,0.1);

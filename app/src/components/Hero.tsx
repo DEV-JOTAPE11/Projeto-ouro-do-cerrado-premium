@@ -1,186 +1,15 @@
-import { ArrowRight} from "lucide-react";
-import { useCallback, useLayoutEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ArrowRight } from "lucide-react";
 import backgroundImage from "../assets/Melhore_a_qualidade_202604240012.jpeg";
-
-gsap.registerPlugin(ScrollTrigger);
-
-const MOBILE_VIDEO_SRC = "/hero-video-intra-mobile.mp4";
-const ANDROID_VIDEO_SRC = "/hero-video-intra-android.mp4";
-const DESKTOP_VIDEO_SRC = "/hero-video-intra-desktop-scrub.mp4";
-const LEGACY_DESKTOP_VIDEO_SRC = "/hero-video-intra.mp4";
-const DESKTOP_SCRUB_FPS = 24;
-const DESKTOP_SCRUB_STEP = 1 / DESKTOP_SCRUB_FPS;
-const ANDROID_SCRUB_FPS = 12;
-const ANDROID_SCRUB_STEP = 1 / ANDROID_SCRUB_FPS;
-
-const isAndroidDevice = () =>
-  typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);
+import facadeImage from "../assets/fachadaprincipal.webp";
+import BookingCard from "./BookingCard";
 
 const Hero = () => {
   const containerRef = useRef<HTMLElement>(null);
-  const desktopVideoRef = useRef<HTMLVideoElement>(null);
-  const mobileVideoRef = useRef<HTMLVideoElement>(null);
-  const mobileVideoDurationRef = useRef(8);
-  const mobileDesiredTimeRef = useRef(0);
-  const mobileSeekRafRef = useRef<number | null>(null);
-  const mobileLastAppliedTimeRef = useRef(-1);
-  const isAndroidScrubModeRef = useRef(false);
-  const desktopDesiredTimeRef = useRef(0);
-  const desktopSeekRafRef = useRef<number | null>(null);
-  const desktopLastAppliedTimeRef = useRef(-1);
 
-  const isMobileViewport = () =>
-    typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
-
-  const applyDesktopVideoTime = useCallback((time: number) => {
-    const video = desktopVideoRef.current;
-    if (!video || video.readyState < 1) return;
-
-    const duration = video.duration || 8;
-    let safeTime = Math.min(Math.max(time, 0), duration);
-
-    if (!Number.isFinite(safeTime)) return;
-
-    safeTime = Math.min(
-      duration,
-      Math.round(safeTime * DESKTOP_SCRUB_FPS) / DESKTOP_SCRUB_FPS
-    );
-
-    if (Math.abs(safeTime - desktopLastAppliedTimeRef.current) < DESKTOP_SCRUB_STEP * 0.5) {
-      return;
-    }
-
-    if (video.seeking) return;
-
-    if (typeof video.fastSeek === "function") {
-      video.fastSeek(safeTime);
-    } else {
-      video.currentTime = safeTime;
-    }
-
-    desktopLastAppliedTimeRef.current = safeTime;
-  }, []);
-
-  const syncDesktopVideoTime = useCallback((time: number) => {
-    desktopDesiredTimeRef.current = time;
-
-    if (desktopSeekRafRef.current !== null) return;
-
-    desktopSeekRafRef.current = window.requestAnimationFrame(() => {
-      desktopSeekRafRef.current = null;
-      applyDesktopVideoTime(desktopDesiredTimeRef.current);
-    });
-  }, [applyDesktopVideoTime]);
-
-  const applyMobileVideoTime = useCallback((time: number) => {
-    const video = mobileVideoRef.current;
-    if (!video || video.readyState < 1) return;
-
-    const duration = video.duration || mobileVideoDurationRef.current;
-    let safeTime = Math.min(Math.max(time, 0), duration);
-
-    if (!Number.isFinite(safeTime)) return;
-
-    if (isAndroidScrubModeRef.current) {
-      safeTime = Math.min(
-        duration,
-        Math.round(safeTime * ANDROID_SCRUB_FPS) / ANDROID_SCRUB_FPS
-      );
-
-      if (Math.abs(safeTime - mobileLastAppliedTimeRef.current) < ANDROID_SCRUB_STEP * 0.5) {
-        return;
-      }
-
-      if (video.seeking) return;
-
-      if (typeof video.fastSeek === "function") {
-        video.fastSeek(safeTime);
-      } else {
-        video.currentTime = safeTime;
-      }
-
-      mobileLastAppliedTimeRef.current = safeTime;
-      return;
-    }
-
-    video.currentTime = safeTime;
-  }, []);
-
-  const syncMobileVideoTime = useCallback((time: number) => {
-    mobileDesiredTimeRef.current = time;
-
-    if (isAndroidScrubModeRef.current) {
-      if (mobileSeekRafRef.current !== null) return;
-
-      mobileSeekRafRef.current = window.requestAnimationFrame(() => {
-        mobileSeekRafRef.current = null;
-        applyMobileVideoTime(mobileDesiredTimeRef.current);
-      });
-
-      return;
-    }
-
-    applyMobileVideoTime(time);
-  }, [applyMobileVideoTime]);
-
-  useLayoutEffect(() => {
-    isAndroidScrubModeRef.current = isAndroidDevice();
-
-    const mobileVideo = mobileVideoRef.current;
-    const desktopVideo = desktopVideoRef.current;
-    const handleMobileSeeked = () => {
-      if (isAndroidScrubModeRef.current) {
-        syncMobileVideoTime(mobileDesiredTimeRef.current);
-      }
-    };
-    const handleDesktopSeeked = () => {
-      syncDesktopVideoTime(desktopDesiredTimeRef.current);
-    };
-
-    if (mobileVideo) {
-      mobileVideo.muted = true;
-
-      mobileVideo.playsInline = true;
-      mobileVideo.setAttribute("playsinline", "true");
-      mobileVideo.setAttribute("webkit-playsinline", "true");
-      mobileVideo.addEventListener("seeked", handleMobileSeeked);
-      mobileVideo.load();
-    }
-
-    if (desktopVideo) {
-      desktopVideo.muted = true;
-      desktopVideo.playsInline = true;
-      desktopVideo.addEventListener("seeked", handleDesktopSeeked);
-    }
-
+  useEffect(() => {
     const ctx = gsap.context(() => {
-      // Duração exata do vídeo re-encodado para o scrub perfeito
-      const videoDuration = 8;
-
-      // Usando trigger no container (250vh) sem pin, porque a div interna é sticky!
-      ScrollTrigger.create({
-        trigger: containerRef.current,
-        start: "top top",
-        end: "bottom bottom", 
-        scrub: true, // Sem delay (true) para resposta imediata
-        once: false, // EXTREMAMENTE IMPORTANTE: sobrescreve o ScrollTrigger.defaults({ once: true }) do App.tsx
-        onUpdate: (self) => {
-          // self.progress vai de 0 a 1 conforme você desce, e 1 a 0 conforme você sobe!
-          
-            // Força o vídeo a ir para o tempo exato (isso garante que o vídeo VOLTE quando rolar pra cima)
-          const nextTime = self.progress * videoDuration;
-
-          if (isMobileViewport()) {
-            syncMobileVideoTime(nextTime);
-          } else {
-            syncDesktopVideoTime(nextTime);
-          }
-        }
-      });
-
-      // Animações de entrada
       gsap.fromTo(
         ".hero-element",
         { y: 40, opacity: 0 },
@@ -190,139 +19,103 @@ const Hero = () => {
           duration: 1.2,
           stagger: 0.15,
           ease: "power3.out",
+          delay: 0.2
         }
       );
     }, containerRef);
 
-    return () => {
-      if (mobileSeekRafRef.current !== null) {
-        window.cancelAnimationFrame(mobileSeekRafRef.current);
-        mobileSeekRafRef.current = null;
-      }
-
-      if (desktopSeekRafRef.current !== null) {
-        window.cancelAnimationFrame(desktopSeekRafRef.current);
-        desktopSeekRafRef.current = null;
-      }
-
-      if (mobileVideo) {
-        mobileVideo.removeEventListener("seeked", handleMobileSeeked);
-      }
-
-      if (desktopVideo) {
-        desktopVideo.removeEventListener("seeked", handleDesktopSeeked);
-      }
-
-      ctx.revert();
-    };
-  }, [syncDesktopVideoTime, syncMobileVideoTime]);
-
-  const isMobile = isMobileViewport();
-  const isAndroid = isAndroidDevice();
-  const mobileVideoSrc = isAndroid ? ANDROID_VIDEO_SRC : MOBILE_VIDEO_SRC;
-  const desktopVideoSrc = isMobile ? LEGACY_DESKTOP_VIDEO_SRC : DESKTOP_VIDEO_SRC;
-  const mobilePreload = isMobile ? "auto" : "none";
-  const desktopPreload = isAndroid && isMobile ? "none" : "auto";
+    return () => ctx.revert();
+  }, []);
 
   return (
-    // Container externo define quanto tempo a tela vai rolar (250vh)
-    <section ref={containerRef} id="inicio" className="relative h-[250vh] bg-background">
+    <section ref={containerRef} id="inicio" className="relative w-full min-h-[100dvh] flex flex-col justify-between pt-32 pb-24 md:pt-40 md:pb-32 mb-16 md:mb-24 overflow-visible">
       
-      {/* Container interno pegajoso (Sticky) - Ajustado para mobile com min-h-screen e flex-col */}
-      <div className="sticky top-0 min-h-[100dvh] w-full flex flex-col justify-center pt-28 pb-16 lg:pt-20 lg:pb-0 overflow-hidden">
-        
-        {/* Background Image */}
-        <div className="absolute inset-0 -z-10">
-          <img
-            src={backgroundImage}
-            alt="Background"
-            className="w-full h-full object-cover opacity-30 mix-blend-multiply"
-          />
-        </div>
+      {/* Background Image */}
+      <div className="absolute inset-0 -z-10 bg-[#2c2421]">
+        <img
+          src={backgroundImage}
+          alt="Hotel Background"
+          className="w-full h-full object-cover object-center"
+        />
+        {/* Subtle Dark Overlay for readability */}
+        <div className="absolute inset-0 bg-black/40 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/60" />
+      </div>
 
-        <div className="container-custom flex flex-col-reverse lg:grid lg:grid-cols-2 gap-8 lg:gap-20 items-center">
+      <div className="container-custom flex-1 flex flex-col justify-center relative z-10">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
-          {/* Coluna da Esquerda: Textos (No mobile fica em baixo por causa do flex-col-reverse) */}
-          <div className="space-y-6 lg:space-y-8 text-left z-10 w-full">
-            <div className="hero-element inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#b2875c]/10 text-[#b2875c] font-medium text-sm w-fit">
-              <div className="w-2 h-2 rounded-full bg-[#b2875c] animate-pulse" />
-              <span>Experiência Cinematográfica</span>
+          {/* Coluna da Esquerda: Textos */}
+          <div className="lg:col-span-7 space-y-6 lg:space-y-8 text-left w-full pt-8 md:pt-0">
+            <div className="hero-element inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-medium text-sm w-fit shadow-sm">
+              <div className="w-2 h-2 rounded-full bg-[#E3C385] animate-pulse" />
+              <span className="tracking-wide">Hotel Ouro do Cerrado</span>
             </div>
             
-            <h1 className="hero-element text-4xl md:text-5xl lg:text-7xl font-bold leading-[1.1] text-foreground font-display tracking-tight">
-              A nova <br />
-              assinatura do <br />
-              <span className="text-muted-foreground">seu descanso.</span>
+            <h1 className="hero-element text-4xl md:text-5xl lg:text-[5.5rem] font-bold leading-[1.05] text-white font-display tracking-tight drop-shadow-sm">
+              Viva uma estadia com <br className="hidden lg:block" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E3C385] to-[#C29B57]">conforto</span> e tranquilidade.
             </h1>
             
-            <p className="hero-element text-base md:text-lg lg:text-xl font-light text-muted-foreground max-w-lg">
-              Sua estadia inesquecível começa aqui
-              <br />
-              Uma experiência única em hospedagem no coração de Buritis-MG
+            <p className="hero-element text-base md:text-lg lg:text-xl font-light text-gray-200 max-w-xl leading-relaxed drop-shadow-sm">
+              No Hotel Ouro do Cerrado, você encontra acomodações confortáveis, atendimento acolhedor e a praticidade que precisa para sua viagem. Seja para descanso, trabalho ou passagem pela região, oferecemos uma experiência agradável em um ambiente pensado para o seu bem-estar.
             </p>
             
-            <div className="hero-element pt-4 flex flex-col sm:flex-row gap-4">
-  
+            <div className="hero-element pt-6 flex flex-col sm:flex-row gap-4">
                 {/* Botão principal */}
                 <a 
                   href="#acomodacoes" 
-                  className="group relative inline-flex justify-center px-8 py-4 bg-[#b2875c] text-white font-medium rounded-full overflow-hidden hover:bg-[#9a744d] transition-all duration-300 items-center gap-2 shadow-lg hover:shadow-xl"
+                  className="group relative inline-flex justify-center px-8 py-4 bg-white text-[#2c2421] font-semibold rounded-full overflow-hidden hover:bg-gray-100 transition-all duration-300 items-center gap-2 shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgba(255,255,255,0.2)]"
                 >
-                  <span className="relative z-10">Confira Nossas Acomodações</span>
+                  <span className="relative z-10">Conhecer Acomodações</span>
                   <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform relative z-10" />
                 </a>
 
                 {/* Botão secundário */}
                 <a 
-                  href="#contato" 
+                  href="https://api.whatsapp.com/send?phone=5538999248203" 
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex justify-center px-8 py-4 
-                    bg-[#b2875c]/10 backdrop-blur-lg 
-                    border border-white/20 text-[#2c2421] 
+                    bg-black/20 backdrop-blur-lg 
+                    border border-white/30 text-white 
                     font-medium rounded-full 
-                    hover:bg-[#904031] hover:text-white 
+                    hover:bg-black/40 hover:border-white/50
                     transition-all duration-300 
                     items-center shadow-sm hover:shadow-lg"
                 >
-                  Fazer Reserva
+                  Falar no WhatsApp
                 </a>
-
             </div>
-            
           </div>
 
-          {/* Coluna da Direita: Vídeo Menor e Arredondado (No mobile fica em cima por causa do flex-col-reverse) */}
-          <div className="hero-element relative w-full aspect-video lg:aspect-[4/3] rounded-2xl lg:rounded-3xl overflow-hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] bg-black/5 border border-border/50">
-            <video
-              ref={mobileVideoRef}
-              src={mobileVideoSrc}
-              poster={backgroundImage}
-              className="absolute inset-0 w-full h-full object-cover bg-black/5 md:hidden"
-              muted
-              playsInline
-              preload={mobilePreload}
-              onLoadedMetadata={(event) => {
-                const video = event.currentTarget;
-                mobileVideoDurationRef.current = video.duration || 8;
-                syncMobileVideoTime(mobileDesiredTimeRef.current);
-              }}
-            />
-            <video
-              ref={desktopVideoRef}
-              src={desktopVideoSrc}
-              className="absolute inset-0 hidden w-full h-full object-cover md:block"
-              muted
-              playsInline
-              preload={desktopPreload}
-              onLoadedMetadata={() => {
-                syncDesktopVideoTime(desktopDesiredTimeRef.current);
-              }}
-            />
+          {/* Coluna da Direita: Imagem da Fachada */}
+          <div className="lg:col-span-5 w-full flex justify-end items-center mt-12 lg:mt-0 relative hero-element">
+            <div className="relative w-full max-w-sm mx-auto lg:mx-0 lg:ml-auto aspect-[4/5] rounded-[2rem] overflow-hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.3)] border border-white/20 transform lg:rotate-2 hover:rotate-0 transition-transform duration-500 ease-out">
+              <img
+                src={facadeImage}
+                alt="Fachada do Hotel Ouro do Cerrado"
+                className="absolute inset-0 w-full h-full object-cover hover:scale-105 transition-transform duration-700 ease-out"
+              />
+              {/* Glass overlay text or gradient on the card */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent flex flex-col justify-end p-6">
+                 <p className="text-white font-medium text-lg drop-shadow-md">Bem-vindo ao seu refúgio.</p>
+                 <p className="text-gray-300 text-sm font-light mt-1">Buritis - MG</p>
+              </div>
+            </div>
           </div>
 
-        </div>     
+        </div>
       </div>
+      
+      {/* Container para o BookingCard (flutuando na parte inferior) */}
+      <div className="w-full absolute bottom-0 left-0 right-0 translate-y-1/2 px-4 md:px-0 z-20 hero-element">
+         <div className="container-custom">
+            <BookingCard />
+         </div>
+      </div>
+
     </section>
-    
   );
 };
 

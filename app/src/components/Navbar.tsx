@@ -25,13 +25,14 @@ const Navbar = () => {
   ];
 
   return (
-    <nav
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "py-2" : "py-3",
-        isMobileMenuOpen ? "bg-white" : "glass-nav"
-      )}
-    >
+    <div className="fixed top-4 left-4 right-4 md:top-6 md:left-8 md:right-8 z-50 flex justify-center pointer-events-none">
+      <nav
+        className={cn(
+          "w-full max-w-7xl transition-all duration-300 pointer-events-auto",
+          isScrolled ? "py-2 px-4 md:px-8" : "py-3 px-4 md:px-8",
+          isMobileMenuOpen ? "bg-white rounded-[2rem]" : "glass-nav"
+        )}
+      >
       <div className="container-custom flex items-center justify-between">
         {/* Logo */}
         <a href="#inicio" className="flex items-center gap-2 z-50">
@@ -113,7 +114,8 @@ const Navbar = () => {
           </ul>
         </div>
       </div>
-    </nav>
+      </nav>
+    </div>
   );
 };
 
