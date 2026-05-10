@@ -4,6 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import About from "./components/About";
+import VideoShowcase from "./components/VideoShowcase";
 import Accommodations from "./components/Accommodations";
 import Services from "./components/Services";
 import Gallery from "./components/Gallery";
@@ -104,6 +105,7 @@ function App() {
       <main>
         <Hero />
         <About />
+        <VideoShowcase />
         <Accommodations />
         <Services />
         <Gallery />
