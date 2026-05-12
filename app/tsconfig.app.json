@@ -40,6 +40,9 @@
     "src/components/ui/elegant-carousel.tsx",
     "src/components/ui/liquid-glass-card.tsx",
     "src/components/ui/marquee.tsx",
-    "src/components/ui/marquee-card.tsx"
+    "src/components/ui/marquee-card.tsx",
+    "src/components/ui/animated-testimonials.tsx",
+    "src/components/ui/avatar.tsx",
+    "src/components/ui/separator.tsx"
   ]
 }

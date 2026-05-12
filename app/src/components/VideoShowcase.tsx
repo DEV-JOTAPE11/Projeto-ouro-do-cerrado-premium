@@ -1,11 +1,32 @@
-import { useEffect, useRef } from "react";
-import { ArrowRight } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowRight, Pause, Play } from "lucide-react";
 
 const VideoShowcase = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
 
-  // Lazy-load: só inicia o vídeo quando a seção estiver visível
+  // Sync React state with actual video state
+  // This ensures our UI always reflects the real playback state,
+  // even when the browser pauses/plays the video on its own (e.g. iOS Safari)
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+
+    video.addEventListener("play", handlePlay);
+    video.addEventListener("pause", handlePause);
+
+    return () => {
+      video.removeEventListener("play", handlePlay);
+      video.removeEventListener("pause", handlePause);
+    };
+  }, []);
+
+  // Lazy-load: start video playback when section is visible
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -13,8 +34,10 @@ const VideoShowcase = () => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          video.play().catch(() => {
-            // Autoplay bloqueado pelo navegador — falha silenciosa
+          video.play().then(() => {
+            setHasStarted(true);
+          }).catch(() => {
+            // Autoplay blocked — user will use the play button
           });
         } else {
           video.pause();
@@ -26,6 +49,28 @@ const VideoShowcase = () => {
     if (sectionRef.current) observer.observe(sectionRef.current);
 
     return () => observer.disconnect();
+  }, []);
+
+  // Toggle play/pause — single handler for both touch and click
+  // We use onPointerDown + stopPropagation to avoid the iOS Safari
+  // event bubbling issue where touch events fire click handlers
+  // on parent elements, causing multiple toggle cycles.
+  const togglePlayPause = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (video.paused) {
+      video.play().then(() => {
+        setHasStarted(true);
+      }).catch(() => {
+        // Play failed
+      });
+    } else {
+      video.pause();
+    }
   }, []);
 
   return (
@@ -44,23 +89,61 @@ const VideoShowcase = () => {
         playsInline
         preload="metadata"
         aria-hidden="true"
-        // Não mostra controles
         disablePictureInPicture
         controlsList="nodownload nofullscreen noremoteplayback"
+        // Let the overlay handle all interactions — video element ignores pointer
         style={{ pointerEvents: "none" }}
       >
-        {/* 
-          O vídeo está em public/0510.mp4.
-          Se precisar trocar o nome do arquivo, altere o src abaixo.
-        */}
         <source src="/0510.mp4" type="video/mp4" />
       </video>
 
-      {/* ── Overlay sutil para legibilidade ── */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-black/50 z-[1]" />
+      {/* ── Overlay for legibility + click target for play/pause ── */}
+      <div
+        className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-black/50 z-[1] cursor-pointer"
+        onClick={togglePlayPause}
+        role="button"
+        tabIndex={0}
+        aria-label={isPlaying ? "Pausar vídeo" : "Reproduzir vídeo"}
+        onKeyDown={(e) => {
+          if (e.key === " " || e.key === "Enter") {
+            togglePlayPause(e as unknown as React.MouseEvent);
+          }
+        }}
+      />
 
-      {/* ── Conteúdo por cima do vídeo ── */}
-      <div className="relative z-10 container-custom flex flex-col items-center text-center py-20 md:py-28 lg:py-32">
+      {/* ── Play/Pause Button ── */}
+      <button
+        onClick={togglePlayPause}
+        className={`
+          absolute z-20 flex items-center justify-center
+          w-14 h-14 sm:w-16 sm:h-16 rounded-full
+          bg-white/15 backdrop-blur-md border border-white/25
+          text-white shadow-[0_8px_32px_rgba(0,0,0,0.2)]
+          transition-all duration-500 ease-out
+          hover:bg-white/25 hover:scale-110
+          active:scale-95
+          ${hasStarted && isPlaying
+            ? "bottom-6 right-6 sm:bottom-8 sm:right-8 opacity-0 hover:opacity-100 focus:opacity-100"
+            : "bottom-6 right-6 sm:bottom-8 sm:right-8 opacity-100"
+          }
+        `}
+        aria-label={isPlaying ? "Pausar vídeo" : "Reproduzir vídeo"}
+        // Touch-specific: use touchEnd to avoid ghost clicks on iOS Safari
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          togglePlayPause(e as unknown as React.MouseEvent);
+        }}
+      >
+        {isPlaying ? (
+          <Pause className="h-5 w-5 sm:h-6 sm:w-6 fill-white" />
+        ) : (
+          <Play className="h-5 w-5 sm:h-6 sm:w-6 fill-white ml-0.5" />
+        )}
+      </button>
+
+      {/* ── Content over the video ── */}
+      <div className="relative z-10 container-custom flex flex-col items-center text-center py-20 md:py-28 lg:py-32 pointer-events-none">
         {/* Tag decorativa */}
         <div className="animate-fade-in-up inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-medium text-sm mb-8 shadow-sm">
           <div className="w-2 h-2 rounded-full bg-[#E3C385] animate-pulse" />
@@ -84,8 +167,8 @@ const VideoShowcase = () => {
           a tranquilidade que sua estadia merece.
         </p>
 
-        {/* CTA — mesmo estilo do Hero existente */}
-        <div className="animate-fade-in-up mt-10 flex flex-col sm:flex-row gap-4">
+        {/* CTA — pointer-events re-enabled for buttons */}
+        <div className="animate-fade-in-up mt-10 flex flex-col sm:flex-row gap-4 pointer-events-auto">
           <a
             href="https://api.whatsapp.com/send?phone=5538999248203&text=Ol%C3%A1!%20Vim%20pelo%20site%20do%20Hotel%20Ouro%20do%20Cerrado%20e%20gostaria%20de%20saber%20sobre%20disponibilidade%20de%20hospedagem."
             target="_blank"
@@ -104,6 +187,16 @@ const VideoShowcase = () => {
           </a>
         </div>
       </div>
+
+      {/* ── Mobile: persistent play/pause indicator ── */}
+      {/* On mobile, show a subtle visual cue so users know they can tap to control */}
+      {!hasStarted && (
+        <div className="absolute inset-0 z-[2] flex items-center justify-center pointer-events-none">
+          <div className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center animate-pulse">
+            <Play className="h-8 w-8 text-white fill-white ml-1" />
+          </div>
+        </div>
+      )}
     </section>
   );
 };
