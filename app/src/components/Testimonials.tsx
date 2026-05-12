@@ -19,7 +19,7 @@ const testimonials = [
     content:
       "Atendimento impecável do início ao fim. A equipe foi muito acolhedora e ajudou em todos os detalhes da nossa reserva. Ambiente silencioso e perfeito para descansar.",
     rating: 5,
-    avatar: "https://i.pravatar.cc/150?img=12",
+    avatar: "https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cGVyZmlsfGVufDB8fDB8fHww",
   },
   {
     id: 3,
@@ -39,7 +39,7 @@ const testimonials = [
     content:
       "Fiquei surpreso com o cuidado nos detalhes. Tudo limpo, silencioso e com aquele atendimento que faz a gente querer voltar. Recomendo para qualquer viajante exigente.",
     rating: 5,
-    avatar: "https://i.pravatar.cc/150?img=15",
+    avatar: "https://images.unsplash.com/photo-1628563694622-5a76957fd09c?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyZmlsJTIwZG8lMjBpbnN0YWdyYW18ZW58MHx8MHx8fDA%3D",
   },
   {
     id: 5,

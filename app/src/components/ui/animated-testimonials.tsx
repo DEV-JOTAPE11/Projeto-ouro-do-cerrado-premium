@@ -1,7 +1,9 @@
-import { Avatar, AvatarFallback, AvatarImage } from "./avatar"
+"use client"
+
+
 import { Separator } from "./separator"
 import { Quote, Star } from "lucide-react"
-import { motion, useAnimation, useInView } from "framer-motion"
+import { motion, useAnimation, useInView, type Variants } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 
 export interface Testimonial {
@@ -38,12 +40,12 @@ export function AnimatedTestimonials({
   const [activeIndex, setActiveIndex] = useState(0)
 
   // Refs for scroll animations
-  const sectionRef = useRef(null)
+  const sectionRef = useRef<HTMLElement>(null)
   const isInView = useInView(sectionRef, { once: true, amount: 0.2 })
   const controls = useAnimation()
 
   // Animation variants
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -54,7 +56,7 @@ export function AnimatedTestimonials({
     },
   }
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
@@ -161,13 +163,13 @@ export function AnimatedTestimonials({
                 transition={{ duration: 0.6, ease: "easeInOut" }}
                 style={{
                   zIndex: activeIndex === index ? 10 : 0,
-                  pointerEvents: activeIndex === index ? "auto" : "none",
+                  pointerEvents: (activeIndex === index ? "auto" : "none") as any,
                 }}
               >
                 <div className="bg-white/70 backdrop-blur-sm border border-white/60 shadow-card rounded-2xl p-6 sm:p-8 h-full flex flex-col">
                   {/* Stars */}
                   <div className="mb-5 flex gap-1.5">
-                    {Array(testimonial.rating)
+                    {Array(Math.floor(testimonial.rating || 0))
                       .fill(0)
                       .map((_, i) => (
                         <Star
@@ -189,15 +191,6 @@ export function AnimatedTestimonials({
 
                   {/* Author info */}
                   <div className="flex items-center gap-4">
-                    <Avatar className="h-11 w-11 sm:h-12 sm:w-12 border border-white/70 shadow-[0_8px_20px_-12px_rgba(0,0,0,0.55)]">
-                      <AvatarImage
-                        src={testimonial.avatar}
-                        alt={testimonial.name}
-                      />
-                      <AvatarFallback className="bg-[#b2875c]/10 text-[#b2875c] font-semibold">
-                        {testimonial.name.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
                     <div>
                       <h3 className="font-semibold text-[#2d241c]">
                         {testimonial.name}
@@ -229,9 +222,9 @@ export function AnimatedTestimonials({
               {trustedCompaniesTitle}
             </h3>
             <div className="flex flex-wrap justify-center gap-x-8 gap-y-6 sm:gap-x-12 sm:gap-y-8">
-              {trustedCompanies.map((company) => (
+              {trustedCompanies.map((company, i) => (
                 <div
-                  key={company}
+                  key={`${company}-${i}`}
                   className="text-xl sm:text-2xl font-semibold text-[#735f4a]/40"
                 >
                   {company}
