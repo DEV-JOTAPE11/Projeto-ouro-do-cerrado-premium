@@ -1,37 +1,17 @@
 import { useCallback, useEffect, useRef, useState, type TouchEvent } from "react";
 import { Bed, ChevronLeft, ChevronRight, Maximize, Users } from "lucide-react";
-
-export interface AccommodationSlide {
-  id: number;
-  name: string;
-  image: string;
-  imageHover?: string;
-  guests: string;
-  beds: string;
-  size?: string;
-  price: {
-    individual?: number;
-    duplo?: number;
-    triplo?: number;
-    quadruplo?: number;
-  };
-  features: string[];
-}
+import { formatPrice, getStartingPrice, type AccommodationSlide } from "../../lib/accommodations";
 
 interface ElegantCarouselProps {
   slides: AccommodationSlide[];
+  onReserve?: (roomName: string) => void;
 }
 
 const SLIDE_DURATION = 6000;
 const TRANSITION_DURATION = 700;
 const ACCENT = "#b2875c";
 
-const formatPrice = (value: number) => `R$ ${value.toLocaleString("pt-BR")}`;
-
-const getStartingPrice = (room: AccommodationSlide) =>
-  room.price.individual || room.price.duplo || room.price.triplo || room.price.quadruplo;
-
-export default function ElegantCarousel({ slides }: ElegantCarouselProps) {
+export default function ElegantCarousel({ slides, onReserve }: ElegantCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -215,12 +195,13 @@ export default function ElegantCarousel({ slides }: ElegantCarouselProps) {
               >
                 <ChevronRight className="h-5 w-5" />
               </button>
-              <a
-                href="#contato"
+              <button
+                type="button"
+                onClick={() => onReserve?.(currentSlide.name)}
                 className="ml-auto inline-flex h-10 flex-1 items-center justify-center rounded-md bg-[#904031] px-4 text-sm font-medium text-white transition-colors hover:bg-[#7a3528] sm:flex-none sm:px-8"
               >
                 Reservar Esta Suite
-              </a>
+              </button>
             </div>
           </div>
         </div>

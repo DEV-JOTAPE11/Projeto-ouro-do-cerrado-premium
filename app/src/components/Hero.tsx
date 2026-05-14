@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ArrowRight } from "lucide-react";
 import backgroundImage from "../assets/Melhore_a_qualidade_202604240012.jpeg";
+import mobileBackgroundImage from "../assets/imagem-mobile.jpeg";
 import facadeImage from "../assets/fachadaprincipal.webp";
 import BookingCard from "./BookingCard";
 
@@ -28,14 +29,19 @@ const Hero = () => {
   }, []);
 
   return (
-    <section ref={containerRef} id="inicio" className="relative w-full min-h-[100dvh] flex flex-col justify-between pt-32 pb-24 md:pt-40 md:pb-32 mb-16 md:mb-24 overflow-visible">
+    <section ref={containerRef} id="inicio" className="relative w-full min-h-[140dvh] md:min-h-[100dvh] flex flex-col justify-between pt-32 pb-[30rem] md:pt-40 md:pb-32 mb-64 md:mb-52 lg:mb-64 overflow-visible">
       
       {/* Background Image */}
       <div className="absolute inset-0 -z-10 bg-[#2c2421]">
         <img
+          src={mobileBackgroundImage}
+          alt="Hotel Ouro do Cerrado"
+          className="block md:hidden w-full h-full object-cover object-center"
+        />
+        <img
           src={backgroundImage}
           alt="Hotel Background"
-          className="w-full h-full object-cover object-center"
+          className="hidden md:block w-full h-full object-cover object-center"
         />
         {/* Subtle Dark Overlay for readability */}
         <div className="absolute inset-0 bg-black/40 mix-blend-multiply" />
@@ -90,7 +96,7 @@ const Hero = () => {
           </div>
 
           {/* Coluna da Direita: Imagem da Fachada */}
-          <div className="lg:col-span-5 w-full flex justify-end items-center mt-12 lg:mt-0 relative hero-element">
+          <div className="hidden md:flex lg:col-span-5 w-full justify-end items-center mt-12 lg:mt-0 relative hero-element">
             <div className="relative w-full max-w-sm mx-auto lg:mx-0 lg:ml-auto aspect-[4/5] rounded-[2rem] overflow-hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.3)] border border-white/20 transform lg:rotate-2 hover:rotate-0 transition-transform duration-500 ease-out">
               <img
                 src={facadeImage}
@@ -109,7 +115,7 @@ const Hero = () => {
       </div>
       
       {/* Container para o BookingCard (flutuando na parte inferior) */}
-      <div className="w-full absolute bottom-0 left-0 right-0 translate-y-1/2 px-4 md:px-0 z-20 hero-element">
+      <div className="w-full absolute -bottom-36 md:-bottom-24 lg:-bottom-32 left-0 right-0 translate-y-1/2 px-4 md:px-0 z-20 hero-element">
          <div className="container-custom">
             <BookingCard />
          </div>
