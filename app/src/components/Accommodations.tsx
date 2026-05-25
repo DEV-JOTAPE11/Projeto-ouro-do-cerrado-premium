@@ -9,7 +9,7 @@ const Accommodations = () => {
       }),
     );
 
-    document.getElementById("inicio")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById("contato")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
@@ -23,7 +23,7 @@ const Accommodations = () => {
             Conforto e Elegância em Cada Detalhe
           </h2>
           <p className="text-lg text-muted-foreground">
-            Escolha a acomodação perfeita para sua estadia e agilize sua reserva direto pela Hero.
+            Escolha a acomodação perfeita para sua estadia e agilize sua reserva pelo formulário.
           </p>
         </div>
 

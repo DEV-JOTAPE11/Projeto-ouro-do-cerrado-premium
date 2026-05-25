@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Clock, ExternalLink, MapPin, Phone } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -62,6 +62,22 @@ const mapUrl =
 
 const Contact = () => {
   const [formData, setFormData] = useState<ReservationForm>(initialFormData);
+  const [isHighlighted, setIsHighlighted] = useState(false);
+
+  useEffect(() => {
+    const handleQuickReserve = (event: Event) => {
+      const roomName = (event as CustomEvent<{ roomName?: string }>).detail?.roomName;
+      if (!roomName) return;
+
+      setFormData((current) => ({ ...current, module: roomName }));
+      setIsHighlighted(true);
+      window.setTimeout(() => setIsHighlighted(false), 1600);
+      window.setTimeout(() => document.getElementById("reservation-name")?.focus(), 650);
+    };
+
+    window.addEventListener("quick-reserve-room", handleQuickReserve);
+    return () => window.removeEventListener("quick-reserve-room", handleQuickReserve);
+  }, []);
 
   const updateField = (field: keyof ReservationForm, value: string) => {
     setFormData((current) => ({ ...current, [field]: value }));
@@ -109,8 +125,13 @@ Mensagem: ${formData.message || "Não informado"}`;
         </div>
 
         <div className="grid gap-10 lg:grid-cols-2 lg:items-start lg:gap-12">
-          <form className="space-y-4 animate-slide-in">
+          <form
+            className={`space-y-4 rounded-lg transition-all duration-300 animate-slide-in ${
+              isHighlighted ? "ring-4 ring-[#b2875c]/35 ring-offset-4 ring-offset-[#f7f5f1]" : ""
+            }`}
+          >
             <Input
+              id="reservation-name"
               placeholder="Seu nome"
               value={formData.name}
               onChange={(event) => updateField("name", event.target.value)}

@@ -200,7 +200,7 @@ export default function ElegantCarousel({ slides, onReserve }: ElegantCarouselPr
                 onClick={() => onReserve?.(currentSlide.name)}
                 className="ml-auto inline-flex h-10 flex-1 items-center justify-center rounded-md bg-[#904031] px-4 text-sm font-medium text-white transition-colors hover:bg-[#7a3528] sm:flex-none sm:px-8"
               >
-                Reservar Esta Suite
+                Reservar quarto
               </button>
             </div>
           </div>
