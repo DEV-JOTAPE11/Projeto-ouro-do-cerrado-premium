@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ArrowRight } from "lucide-react";
 import backgroundImage from "../assets/Melhore_a_qualidade_202604240012.jpeg";
-import mobileBackgroundImage from "../assets/imagem-mobile.jpeg";
+import mobileBackgroundImage from "../assets/hero-ouro-cerrado-mobile.webp";
 import facadeImage from "../assets/fachadaprincipal.webp";
 import BookingCard from "./BookingCard";
 
