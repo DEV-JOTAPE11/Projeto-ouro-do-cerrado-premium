@@ -1,4 +1,4 @@
-import heroSuite from "../assets/suiteluxuosa.jpeg";
+import heroSuite from "../assets/suiteluxuosa.png";
 import heroSuiteHover from "../assets/Banheirahidro.webp";
 import roomStandard from "../assets/Deixe_esssa_imagem4k_202604251821.jpeg";
 import roomFamily from "../assets/luxo-executivo.jpg";

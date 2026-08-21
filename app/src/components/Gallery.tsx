@@ -12,7 +12,7 @@ import {
 import fachadaPrincipal from "../assets/fachadaprincipal.webp"
 import hotelExterior from "../assets/Melhore_a_qualidade_202604240012.jpeg"
 import cafeManhaFrutas from "../assets/cafe-mmanha-frutas.jpg"
-import suiteLuxuosa from "../assets/suiteluxuosa.jpeg"
+import suiteLuxuosa from "../assets/suiteluxuosa.png"
 import bathroomLuxury from "../assets/bathroom-luxury.png"
 import areaLazer from "../assets/arealazer.webp"
 import salaTV from "../assets/sala-de-tv.webp"
