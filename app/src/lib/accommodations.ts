@@ -16,6 +16,7 @@ export interface AccommodationSlide {
   guests: string;
   beds: string;
   size?: string;
+  duploLabel?: string;
   price: {
     individual?: number;
     duplo?: number;
@@ -46,6 +47,7 @@ export const accommodations: AccommodationSlide[] = [
     image: roomStandard,
     guests: "4 pessoas",
     beds: "1 cama de casal e 2 camas de solteiro",
+    duploLabel: "Duplo",
     price: {
       duplo: 260,
       triplo: 360,
@@ -71,12 +73,27 @@ export const accommodations: AccommodationSlide[] = [
     image: masterTriplo,
     guests: "3 pessoas",
     beds: "1 cama de casal e uma de solteiro",
+    duploLabel: "Duplo",
     price: {
       individual: 180,
-      duplo: 230,
+      duplo: 260,
       triplo: 310,
     },
     features: ["Ideal para família", "TV a cabo", "Ar-condicionado"],
+  },
+  {
+    id: 10,
+    name: "Master Triplo Executivo",
+    image: masterTriplo,
+    guests: "3 pessoas",
+    beds: "1 cama de casal e uma de solteiro",
+    duploLabel: "Duplo",
+    price: {
+      individual: 200,
+      duplo: 280,
+      triplo: 330,
+    },
+    features: ["Ideal para família", "TV a cabo", "Ar-condicionado", "Frigobar"],
   },
   {
     id: 5,

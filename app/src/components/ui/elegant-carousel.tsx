@@ -159,7 +159,7 @@ export default function ElegantCarousel({ slides, onReserve }: ElegantCarouselPr
                 )}
                 {currentSlide.price.duplo && (
                   <li className="flex justify-between gap-4">
-                    <span>Casal:</span>
+                    <span>{currentSlide.duploLabel ?? "Casal"}:</span>
                     <strong>{formatPrice(currentSlide.price.duplo)}</strong>
                   </li>
                 )}
